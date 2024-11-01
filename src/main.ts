@@ -84,6 +84,17 @@ app.get("/api/v1/category", (req, res) => {
   res.send(result);
 });
 
+app.get("/api/v1/category/:categoryId", (req, res) => {
+  const categoryId = +req.params.categoryId;
+  const indexOfCategory = categories.findIndex((cat) => cat.id === categoryId);
+
+  if (indexOfCategory === -1) {
+    res.status(404).send({ message: "Category not found!" });
+    return;
+  }
+  res.send(categories[indexOfCategory]);
+});
+
 app.listen(APP_PORT, () => {
   console.log(`Server is up on port ${APP_PORT}`);
 });
