@@ -5,6 +5,7 @@ const APP_PORT = 3000;
 const app = express();
 
 app.get("/", (req, res) => {
+  // ini adalah contoh comment id
   const { id } = req.query;
   res.status(200).send({ id });
 });
