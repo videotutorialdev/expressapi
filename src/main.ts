@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import { Category } from "./interface";
+import { dataCategories } from "./data/category";
 
 dotenv.config();
 
@@ -10,7 +11,7 @@ const app = express();
 
 app.use(express.json());
 
-const categories: Category[] = [];
+const categories: Category[] = dataCategories;
 
 app.get("/", (req, res) => {
   const { id, name } = req.query;
@@ -59,7 +60,28 @@ app.post("/api/v1/category", (req, res) => {
 
   categories.push(category);
 
-  res.send(category);
+  res.status(201).send(category);
+});
+
+app.get("/api/v1/category", (req, res) => {
+  const page = +(req.query.page || 1);
+  const limit = +(req.query.limit || 5);
+  const keywords = req.query.q as string;
+
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+
+  let filters = categories;
+
+  if (keywords) {
+    filters = categories.filter((cat) => {
+      return cat.name.includes(keywords) || cat.description.includes(keywords);
+    });
+  }
+
+  const result = filters.slice(startIndex, endIndex);
+
+  res.send(result);
 });
 
 app.listen(APP_PORT, () => {
