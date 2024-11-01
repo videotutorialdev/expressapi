@@ -95,6 +95,62 @@ app.get("/api/v1/category/:categoryId", (req, res) => {
   res.send(categories[indexOfCategory]);
 });
 
+app.put("/api/v1/category/:categoryId", (req, res) => {
+  const categoryId = +req.params.categoryId;
+  const indexOfCategory = categories.findIndex((cat) => cat.id === categoryId);
+
+  if (indexOfCategory === -1) {
+    res.status(404).send({ message: "Category not found!" });
+    return;
+  }
+
+  const { name, slug, description } = req.body;
+
+  if (!name) {
+    res.status(400).send({ message: "Name is required" });
+    return;
+  }
+
+  if (!slug) {
+    res.status(400).send({ message: "Slug is required" });
+    return;
+  }
+
+  const categorySource = categories[indexOfCategory];
+
+  const isNameExists =
+    categories.filter(
+      (category) =>
+        category.name.toLowerCase() === name.toLowerCase() &&
+        category.id !== categorySource.id
+    ).length > 0;
+
+  if (isNameExists) {
+    res.status(400).send({ message: "Name already exists" });
+    return;
+  }
+
+  const isSlugExists =
+    categories.filter(
+      (category) =>
+        category.slug.toLowerCase() === slug.toLowerCase() &&
+        category.id !== categorySource.id
+    ).length > 0;
+
+  if (isSlugExists) {
+    res.status(400).send({ message: "Slug already exists" });
+    return;
+  }
+
+  categorySource.name = name;
+  categorySource.slug = slug;
+  categorySource.description = description;
+
+  categories[indexOfCategory] = categorySource;
+
+  res.send(categorySource);
+});
+
 app.listen(APP_PORT, () => {
   console.log(`Server is up on port ${APP_PORT}`);
 });
