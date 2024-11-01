@@ -151,6 +151,20 @@ app.put("/api/v1/category/:categoryId", (req, res) => {
   res.send(categorySource);
 });
 
+app.delete("/api/v1/category/:categoryId", (req, res) => {
+  const categoryId = +req.params.categoryId;
+  const indexOfCategory = categories.findIndex((cat) => cat.id === categoryId);
+
+  if (indexOfCategory === -1) {
+    res.status(404).send({ message: "Category not found!" });
+    return;
+  }
+
+  categories.splice(indexOfCategory, 1);
+
+  res.status(200).send({ message: "Ok" });
+});
+
 app.listen(APP_PORT, () => {
   console.log(`Server is up on port ${APP_PORT}`);
 });
