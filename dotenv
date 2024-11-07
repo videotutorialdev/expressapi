@@ -1,1 +1,6 @@
 APP_PORT = 3000
+
+SMPT_USER = noreply@domainanda.dev
+SMPT_PASS = yoursecurepassword
+SMPT_HOST = smtp.mailgun.org
+SMPT_PORT = 587
